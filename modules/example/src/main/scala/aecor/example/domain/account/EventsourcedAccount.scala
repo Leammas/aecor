@@ -1,12 +1,15 @@
 package aecor.example.domain.account
 
+import java.time.Duration
+
 import aecor.data.Folded.syntax._
 import aecor.data._
 import aecor.example.domain.Amount
-import aecor.example.domain.account.Account.{ AccountDoesNotExist, InsufficientFunds }
+import aecor.example.domain.account.Account.{AccountDoesNotExist, InsufficientFunds}
 import aecor.example.domain.account.AccountEvent._
 import aecor.example.domain.account.EventsourcedAccount.AccountState
 import cats.implicits._
+
 import scala.collection.immutable._
 
 class EventsourcedAccount extends Account[Action[Option[AccountState], AccountEvent, ?]] {
@@ -54,6 +57,10 @@ class EventsourcedAccount extends Account[Action[Option[AccountState], AccountEv
       case None =>
         List.empty -> AccountDoesNotExist.asLeft
     }
+
+  def foo(d: Duration): Action[Option[AccountState], AccountEvent, Either[Account.Rejection, Unit]] = Action.read { _ =>
+    ().asRight
+  }
 }
 
 object EventsourcedAccount {
