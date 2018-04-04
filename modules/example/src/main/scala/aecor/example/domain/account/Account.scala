@@ -6,7 +6,8 @@ import aecor.example.AnyValCirceEncoding
 import aecor.example.domain.Amount
 import aecor.example.domain.account.Account.Rejection
 import aecor.example.domain.transaction.TransactionId
-import aecor.macros.boopickleWireProtocol
+import aecor.macros.{ProvidedPickler, boopickleWireProtocol}
+import boopickle.Default.{Pickler, transformPickler}
 import io.circe.{Decoder, Encoder}
 
 @boopickleWireProtocol
@@ -14,13 +15,18 @@ trait Account[F[_]] {
   def open(checkBalance: Boolean): F[Either[Rejection, Unit]]
   def credit(transactionId: AccountTransactionId, amount: Amount): F[Either[Rejection, Unit]]
   def debit(transactionId: AccountTransactionId, amount: Amount): F[Either[Rejection, Unit]]
-  def foo(d: Duration): F[Either[Account.Rejection, Unit]]
+  def foo(d: List[WrappedDuration]): F[Either[Account.Rejection, Unit]]
 }
+
+final case class WrappedDuration(d: Duration)
 
 object Account {
   import boopickle.Default._
 
-  implicit def durationPickler: Pickler[Duration] =  transformPickler((d: String) => Duration.parse(d))(_.toString)
+  implicit def duration1Pickler: Pickler[Duration] =
+    ProvidedPickler(transformPickler { (d: String) =>
+      Duration.parse(d)
+    }(_.toString))
 
   implicit val rejectionPickler =
     compositePickler[Rejection]

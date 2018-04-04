@@ -1,7 +1,5 @@
 package aecor.example.domain.account
 
-import java.time.Duration
-
 import aecor.data.Folded.syntax._
 import aecor.data._
 import aecor.example.domain.Amount
@@ -58,7 +56,7 @@ class EventsourcedAccount extends Account[Action[Option[AccountState], AccountEv
         List.empty -> AccountDoesNotExist.asLeft
     }
 
-  def foo(d: Duration): Action[Option[AccountState], AccountEvent, Either[Account.Rejection, Unit]] = Action.read { _ =>
+  def foo(d: List[WrappedDuration]): Action[Option[AccountState], AccountEvent, Either[Account.Rejection, Unit]] = Action.read { _ =>
     ().asRight
   }
 }

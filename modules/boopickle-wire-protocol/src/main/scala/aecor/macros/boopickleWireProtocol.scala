@@ -95,7 +95,7 @@ object BoopickleWireProtocolMacro {
       }
             }
 
-            import _root_.boopickle.Default._
+            import _root_.aecor.macros.BoopickleDefaults._
 
             final val encoder = new ${Ctor.Name(typeName.value)}[..$abstractTypes, aecor.encoding.WireProtocol.Encoded] {
               ..${
